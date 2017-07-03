@@ -1,9 +1,10 @@
 const webpack = require("webpack");
 const path = require("path");
+const ExtractTextWebpackPlugin = require("extract-text-webpack-plugin");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-    entry : path.resolve(__dirname,"src"),
+    entry : path.resolve(__dirname,"src/main.js"),
     output : {
         path : path.resolve(__dirname,"dist"),
         filename : "bundle.js"
@@ -16,13 +17,18 @@ module.exports = {
             },
             {
                 test : /\.css$/,
-                use : ["css-loader","style-loader"]
+                use:ExtractTextWebpackPlugin.extract({
+                    fallback : "style-loader",
+                    use : "css-loader"/*,
+                     publicfile : path.resolve(__dirname,"./dist")//打包后的css文件的路径*/
+                })
             }
         ]
     },
     plugins : [
+        new ExtractTextWebpackPlugin("style.css"),
         new htmlWebpackPlugin({
-            template : "./src/index.html"
+            template : path.resolve(__dirname,"./src/index.html")
         })
     ]
 }
